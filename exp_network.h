@@ -1,13 +1,11 @@
 #define EXP_ETHER_ADDR_LEN		6
 #define EXP_ETHER_HDR_LEN		14
 #define EXP_ETHER_OCT_LEN		2
-
 #define MAC_ADDRESS_SIZE		17
-int mac_address_size=17;
+int mac_address_size = 17;
 
-struct exp_mac_addr
-{
-	char* mac_string;
+struct exp_mac_addr{
+	char mac_string[18];
 	u_int8_t* mac_network;
 };
 
@@ -21,7 +19,16 @@ void random_mac_address(struct exp_mac_addr* mac_struct)
 	memset(mac_struct->mac_string, '\0', 0);
 	strncpy(mac_struct->mac_string, mac, (size_t)MAC_ADDRESS_SIZE);
 	mac_struct->mac_network = libnet_hex_aton(mac, &mac_address_size);
-//	return libnet_hex_aton(mac, &mac_address_size);
+}
+
+void mac_address_with_vendor(unsigned const char* vendor, struct exp_mac_addr* mac_struct){
+        char mac[18];
+        memset(mac, '\0', 0);
+        sprintf(mac, "%s:%02x:%02x:%02x", vendor, (unsigned char)rand(), (unsigned char)rand(), (unsigned char)rand());
+        memset(mac_struct->mac_string, '\0', 0);
+
+        strncpy(mac_struct->mac_string, mac, sizeof(mac_struct->mac_string));//(size_t)MAC_ADDRESS_SIZE);
+        mac_struct->mac_network = libnet_hex_aton(mac, &mac_address_size);
 }
 
 void mac_address(struct exp_mac_addr* mac_struct, const char* mac_addr)
